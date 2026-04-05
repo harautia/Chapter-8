@@ -114,23 +114,31 @@ const typeDefs = `
   type Query {
     bookCount: Int
     authorCount: Int
-    allBooks: [Book!]!
+    allBooks (author: String genre: String): [Book!]
     allAuthors: [Author!]!
-    findBook(title: String!): Book
+    findBook (title: String!): Book
   }`
 
 const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: () => books,
+    allBooks: (root, args) => {
+      if (!args.author && !args.genre) return books
+      if (args.author && !args.genre)
+        return books.filter(book => book.author === args.author)
+      if (args.genre && !args.author)
+        return books.filter(book => book.genres.includes(args.genre))
+      else
+        return books.filter(book => book.author === args.author && book.genres.includes(args.genre))
+    }, 
     allAuthors: () => authors,
     findBook: (root, args) => books.find(book => book.title === args.title )
   },
   // This is needed to define authorBookCount data in type Author! Since it is not default there
   Author: {
-    authorBookCount: (count) => {
-      return books.filter(book => book.author === count.name).length
+    authorBookCount: (root) => {
+      return books.filter(b => b.author === root.name).length
     },
   }
 }

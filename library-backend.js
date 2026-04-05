@@ -117,7 +117,22 @@ const typeDefs = `
     allBooks (author: String genre: String): [Book!]
     allAuthors: [Author!]!
     findBook (title: String!): Book
-  }`
+  }
+  type Mutation {
+    addBook(
+      title: String!
+      published: Int!
+      author: String!
+      genres: [String!]
+      ): Book
+    editAuthor(
+      name: String!
+      setBornTo: Int    
+      ): Author
+  }
+`
+
+const { v1: uuid } = require('uuid')
 
 const resolvers = {
   Query: {
@@ -139,7 +154,26 @@ const resolvers = {
   Author: {
     authorBookCount: (root) => {
       return books.filter(b => b.author === root.name).length
+    }
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      const book = { ...args, id: uuid() }
+      const author = {name: args.author, id:uuid()}
+      console.log(author)
+      books = books.concat(book)
+      authors = authors.concat(author) 
+      return book
     },
+    editAuthor: (root, args) => {
+      const author = authors.find(p => p.name === args.name)
+      if (!author) return null
+      console.log(args)
+      const updatedAuthor = { ...author, born: args.setBornTo }
+      console.log(updatedAuthor)
+      authors = authors.map(p => p.name === args.name ? updatedAuthor : p)
+      return updatedAuthor
+    }
   }
 }
 

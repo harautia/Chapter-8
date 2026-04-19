@@ -18,9 +18,9 @@ const App = () => {
   return (
     <Router>
       <div>
-        <Link style={padding} to="/">authors</Link>
-        <Link style={padding} to="/books">books</Link>
-        <Link style={padding} to="/add">add book</Link>
+        <Link style={padding} to="/">Authors</Link>
+        <Link style={padding} to="/books">Books</Link>
+        <Link style={padding} to="/add">Add book</Link>
       </div>
       <Routes>
         <Route path="/books" element={<Books/>}/>

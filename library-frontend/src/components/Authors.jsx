@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client/react'
 const ALL_AUTHORS = gql`
   query {
     allAuthors {
+      id
       name
       born
       authorBookCount
@@ -29,7 +30,7 @@ const Authors = () => {
             <th>books</th>
           </tr>
           {data.allAuthors.map((a) => (
-            <tr key={a.name}>
+            <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.authorBookCount}</td>

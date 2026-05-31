@@ -25,8 +25,9 @@ const ADD_AUTHOR_AGE = gql`
 }
 `
 
-const AgeForm = () => {
+const AgeForm = ({authors}) => {
 
+  console.log("Ageformin sisällä oleva data:", authors)
   const [born, setBorn] = useState('')
   const [name, setAuthor] = useState('')
 
@@ -49,11 +50,17 @@ const AgeForm = () => {
       <h2>Set Birthyear</h2>
         <form onSubmit={submit}>
         <div>
+          <label>
           Author
-          <input
+          <select          
             value={name}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+            onChange={({target}) => setAuthor(target.value)}
+          >
+            <option value="">-- No author --</option>
+            {authors.allAuthors.map((a) => (
+              <option key={a.id} value={a.name}>{a.name}</option>))}
+          </select>
+          </label>
         </div>
         <div>
           Born
@@ -72,7 +79,7 @@ const AgeForm = () => {
 const Authors = () => {
 
   const { data, loading, error } = useQuery(ALL_AUTHORS)
-  console.log(data)
+  console.log("Authorin sisällä oleva data: ", data)
   if (!data) return null
   if (loading) return <div>loading...</div>
   //if (error) return <div>error: {error.message}</div>
@@ -97,7 +104,7 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
-      <AgeForm/>
+      <AgeForm authors={data}/>
     </div>
   )
 }

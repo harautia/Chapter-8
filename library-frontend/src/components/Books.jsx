@@ -15,9 +15,10 @@ const Books = () => {
 
   const { data, loading, error } = useQuery(ALL_BOOKS)
   console.log(data)
-  if (!data) return null
   if (loading) return <div>loading...</div>
-  //if (error) return <div>error: {error.message}</div>
+  if (error) return <div>error: {error.message}</div>
+  if (!data) return null
+
 
   return (
     <div>

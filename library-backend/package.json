@@ -23,6 +23,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "graphql": "^16.13.2",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.0",
     "require": "^0.4.4"
   }

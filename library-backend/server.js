@@ -13,7 +13,7 @@ const getUserFromAuthHeader = async (auth) => {
   }
  
   const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
-  return User.findById(decodedToken.id).populate('friends')
+  return User.findById(decodedToken.id)
 }
 
 const startServer = (port) => {
@@ -24,11 +24,13 @@ const startServer = (port) => {
 
     startStandaloneServer(server, {
         listen: { port },
-        context: async ({ req }) => {
-        const auth = req.headers.authorization
+      context: async ({ req }) => {
+        const auth = req ? req.headers.authorization : null
+        // console.log('AUTH HEADER:', auth)
         const currentUser = await getUserFromAuthHeader(auth)
+        // console.log('CURRENT USER:', currentUser)
         return { currentUser }
-    },
+      }
     }).then(({ url }) => {
         console.log(`Server ready at ${url}`)
   })

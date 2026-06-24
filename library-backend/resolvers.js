@@ -9,12 +9,9 @@ const resolvers = {
   Query: {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
-    allBooks: async (root, args) => {
-      return Book.find()
-    }, 
-    allAuthors: async (root, args) => {
-      return Author.find()
-    }
+    allBooks: async (root, args) => { return Book.find()}, 
+    allAuthors: async (root, args) => { return Author.find()},
+    me: (root, args, context) => { return context.currentUser}
   },
   Mutation: {
 
@@ -55,10 +52,22 @@ const resolvers = {
     In short: the in-memory version was loosely typed all the way through. MongoDB + the updated GraphQL schema both enforce that author is a real referenced object, not just a name string.
     */
 
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
       console.log(args)
-      let author = await Author.findOne({ name: args.author });
-      
+
+      const currentUser = context.currentUser
+      // console.log(currentUser)
+
+      if (!currentUser) {
+        throw new GraphQLError('not authenticated', {
+          extensions: {
+            code: 'UNAUTHENTICATED',
+          },
+        })
+      }
+
+      const author = await Author.findOne({ name: args.author });
+
       if (!author) {
         author = new Author({ name: args.author });
         await author.save();
@@ -83,32 +92,56 @@ const resolvers = {
 
       return book.save();
     },
-  createUser: async (root, args) => {
-    const user = new User({
-      username: args.username,
-      favoriteGenre: args.favoriteGenre
-    })
 
-    return user.save()
-      .catch(error => {
-        throw new GraphQLError(`Creating the user failed: ${error.message}`, {
+    editAuthor: async (root, args, context) => {
+      console.log(args)
+
+      const currentUser = context.currentUser
+      // console.log(currentUser)
+
+      if (!currentUser) {
+        throw new GraphQLError('not authenticated', {
           extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: args.username,
-            error
-          }
+            code: 'UNAUTHENTICATED',
+          },
         })
-      })
-  },
-  login: async (root, args) => {
-    const user = await User.findOne({ username: args.username })
+      }
 
-    if ( !user || args.password !== 'secret' ) {
-      throw new GraphQLError('wrong credentials', {
-        extensions: {
-          code: 'BAD_USER_INPUT'
-        }
-      })        
+      const author = await Author.findOne({ name: args.name })
+
+      if (!author) return null
+
+      author.born = args.setBornTo
+      
+      return author.save()
+    },
+
+    createUser: async (root, args) => {
+      const user = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre
+      })
+
+      return user.save()
+        .catch(error => {
+          throw new GraphQLError(`Creating the user failed: ${error.message}`, {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.username,
+              error
+            }
+          })
+        })
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
+
+      if ( !user || args.password !== 'secret' ) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: {
+            code: 'BAD_USER_INPUT'
+          }
+        })        
     }
 
     const userForToken = {
@@ -160,15 +193,6 @@ const resolvers = {
       authors = authors.concat(author) 
       return book
     },
-    editAuthor: (root, args) => {
-      const author = authors.find(p => p.name === args.name)
-      if (!author) return null
-      console.log(args)
-      const updatedAuthor = { ...author, born: args.setBornTo }
-      console.log(updatedAuthor)
-      authors = authors.map(p => p.name === args.name ? updatedAuthor : p)
-      return updatedAuthor
-    }
   }
 }
 */

@@ -13,14 +13,17 @@ const typeDefs = /* GraphQL */ `
     id: ID!
     authorBookCount: Int
   }
+
   type User {
-  username: String!
-  favoriteGenre: String!
-  id: ID!
-}
-type Token {
-  value: String!
-}
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int
     authorCount: Int
@@ -29,6 +32,7 @@ type Token {
     findBook (title: String!): Book
     me: User
   }
+
   type Mutation {
     addBook(
       title: String!
@@ -36,18 +40,22 @@ type Token {
       author: String!
       genres: [String!]
       ): Book!
+
     editAuthor(
       name: String!
       setBornTo: Int    
       ): Author
+
     createUser(
       username: String!
       favoriteGenre: String!
-    ): User
+      ): User
+
     login(
       username: String!
       password: String!
-    ): Token
+      ): Token
+    _resetDatabase: Boolean
   }
 `
 

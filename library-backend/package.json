@@ -15,8 +15,8 @@
   "main": "librarary-backend.js",
   "scripts": {
     "start": "node library-backend.js",
-    "test": "node --watch library-backend.js",
-    "start:test": "cross-env NODE_ENV=test node --watch library-backend.js"
+    "dev": "NODE_ENV=development node --watch library-backend.js",
+    "test": "NODE_ENV=test node --test"
   },
   "dependencies": {
     "@apollo/server": "^5.5.0",
@@ -24,7 +24,11 @@
     "express": "^5.2.1",
     "graphql": "^16.13.2",
     "jsonwebtoken": "^9.0.3",
+    "mongodb-memory-server": "^11.2.0",
     "mongoose": "^9.7.0",
     "require": "^0.4.4"
+  },
+  "devDependencies": {
+    "supertest": "^7.2.2"
   }
 }

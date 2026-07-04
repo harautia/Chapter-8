@@ -3,6 +3,8 @@ const Book = require('./models/book')
 const Author = require('./models/author')
 const User = require('./models/user')
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
+
 
 
 const resolvers = {
@@ -151,6 +153,15 @@ const resolvers = {
 
     return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
   },
+    _resetDatabase: async () => {
+      if (process.env.NODE_ENV !== 'test') {
+        throw new GraphQLError('_resetDatabase is only available in test mode')
+      }
+      await Author.deleteMany({})
+      await Book.deleteMany({})
+      await User.deleteMany({})
+      return true
+    }
   }
 }
 

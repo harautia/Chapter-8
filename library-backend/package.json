@@ -15,7 +15,7 @@
   "main": "librarary-backend.js",
   "scripts": {
     "start": "node library-backend.js",
-    "dev": "NODE_ENV=development node --watch library-backend.js",
+    "dev": "node --watch library-backend.js",
     "test": "NODE_ENV=test node --test"
   },
   "dependencies": {

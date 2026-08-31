@@ -59,8 +59,6 @@ const resolvers = {
     */
 
     addBook: async (root, args, context) => {
-      console.log(args)
-
       const currentUser = context.currentUser
       // console.log(currentUser)
 
@@ -100,8 +98,6 @@ const resolvers = {
     },
 
     editAuthor: async (root, args, context) => {
-      console.log(args)
-
       const currentUser = context.currentUser
       // console.log(currentUser)
 
@@ -116,9 +112,7 @@ const resolvers = {
       const author = await Author.findOne({ name: args.name })
 
       if (!author) return null
-
       author.born = args.setBornTo
-      
       return author.save()
     },
 
@@ -170,9 +164,6 @@ const resolvers = {
 }
 
 module.exports = resolvers
-
-
-
 
 
 
